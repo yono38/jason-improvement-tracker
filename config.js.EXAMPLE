@@ -1,0 +1,8 @@
+module.exports = {
+  equinox: {
+    // FILL THIS IN
+    username: '', 
+    password: '',
+    apiRoot: 'https://api.equinox.com'
+  }
+};

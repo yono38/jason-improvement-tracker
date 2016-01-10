@@ -1,0 +1,17 @@
+{
+  "name": "jason-improvement-dashboard",
+  "version": "0.0.1",
+  "description": "An unofficial API wrapper for the Equinox Fitness Club Web API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "author": "Jason Schapiro <yono38@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.13.3",
+    "request": "^2.67.0",
+    "request-promise": "^1.0.2"
+  }
+}
