@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Self Improvement Tracker">
+    <meta name="author" content="Jason Schapiro">
+
+    <title>Self Improvement Dashboard</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Custom styles for this template -->
+    <link href="dashboard.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div id="dash-container" class="container">
+        <div class="windows8">
+                <div class="wBall" id="wBall_1">
+                        <div class="wInnerBall"></div>
+                </div>
+                <div class="wBall" id="wBall_2">
+                        <div class="wInnerBall"></div>
+                </div>
+                <div class="wBall" id="wBall_3">
+                        <div class="wInnerBall"></div>
+                </div>
+                <div class="wBall" id="wBall_4">
+                        <div class="wInnerBall"></div>
+                </div>
+                <div class="wBall" id="wBall_5">
+                        <div class="wInnerBall"></div>
+                </div>
+        </div>
+    </div>
+          <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+          <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+          <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+          <script type="text/javascript" src="dashboard.js"></script>
+
+          <script type="text/template" id="dash-template">
+            <h1 class="text-center">Jason's Improvement Dashboard</h1>
+            <h2 class="text-center">Showing Info for: {{calories.date}}</h2>
+
+              <div class="row placeholders">
+                  <div class="col-xs-6 col-sm-3 placeholder">
+                    <img src="http://www.equinox.com/assets/images/sharing/equinox_logo.jpg" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
+                    <h2>{{gym.totals.month}}</h2>
+                    <span class="text-muted">Checkins This Month</span>
+                  </div>
+                  <div class="col-xs-6 col-sm-3 placeholder">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/6/63/MyFitnessPal_Logo.png" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
+                    <h2>{{calories.netCalories}}/1601</h2>
+                    <span class="text-muted">Net Calories</span>
+                  </div>
+                  <div class="col-xs-6 col-sm-3 placeholder">
+                    <img src="http://media.tumblr.com/5fd6b3ccc4e8c978c87f469b236558ad/tumblr_inline_mwkqv1OuOg1ss97ol.png" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
+                    <h2>TBD</h2>
+                    <span class="text-muted">Spanish Lesson Streak</span>
+                  </div>
+                  <div class="col-xs-6 col-sm-3 placeholder">
+                    <img src="http://thefinancialbrand.com/wp-content/uploads/2015/06/Mint-logo.png" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
+                    <h2>TBD</h2>
+                    <span class="text-muted">Daily Spending</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row text-center">
+                <a class="btn btn-success" id="refresh" href="#" onclick="location.reload()">Refresh Data</a>
+              </div>
+          </script>
+
+  </body>
+</html>
