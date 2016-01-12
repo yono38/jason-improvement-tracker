@@ -1,10 +1,20 @@
 require('dotenv').load();
 var eq = require('./lib/equinox.js')();
 var fp = require('./lib/myfitnesspal.js')();
+var duo = require('./lib/duolingo.js')();
 var express = require('express'),
     cors = require('cors');
 var Promise = require('bluebird');
 var app = express();
+
+app.get('/duo', function(req, res) {
+  duo.login().then(function(data) {
+    console.log('Logged in!');
+    duo.getStreak().then(function(data) {
+      res.json(data);
+    });
+  });
+});
 
 app.get('/eq', function (req, res) {
   eq.login().then(function() {
@@ -22,10 +32,12 @@ app.get('/fp', function(req, res) {
 });
 
 app.get('/trackall', function(req, res) {
-  Promise.all([fp.getCalorieInfo(), eq.loginAndGetCheckins()]).then(function(resolved) {
+  Promise.all([fp.getCalorieInfo(), eq.loginAndGetCheckins(), duo.loginAndGetStreak()]).then(function(resolved) {
+    console.log(resolved);
     var resObj = {
       calories: resolved[0],
-      gym: resolved[1]
+      gym: resolved[1],
+      language: resolved[2]
     };
 
     res.json(resObj);
