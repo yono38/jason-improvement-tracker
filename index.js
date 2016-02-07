@@ -26,13 +26,13 @@ app.get('/eq', function (req, res) {
 });
 
 app.get('/fp', function(req, res) {
-  fp.getCalorieInfo().then(function(data) {
+  fp.loginAndGetCalorieInfo().then(function(data) {
     res.json(data);
   });
 });
 
 app.get('/trackall', function(req, res) {
-  Promise.all([fp.getCalorieInfo(), eq.loginAndGetCheckins(), duo.loginAndGetStreak()]).then(function(resolved) {
+  Promise.all([fp.loginAndGetCalorieInfo(), eq.loginAndGetCheckins(), duo.loginAndGetStreak()]).then(function(resolved) {
     console.log(resolved);
     var resObj = {
       calories: resolved[0],
