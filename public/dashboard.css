@@ -36,6 +36,11 @@ h1 {
     text-align: center;
     max-height: 217px;
 }
+.date-header {
+    white-space: nowrap;
+    color: #B8DBD9;
+    font-weight: bold;
+}
 .hide-tile {
     display: none;
 }
