@@ -11,9 +11,12 @@
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
 
     <!-- Custom styles for this template -->
     <link href="dashboard.css" rel="stylesheet">
+    <link href="loader.css" rel="stylesheet">
+    <link href="icons/flaticon.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -45,37 +48,28 @@
           <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
           <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
           <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+          <!--<div>Icons made by <a href="http://www.flaticon.com/authors/icomoon" title="Icomoon">Icomoon</a>, <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>-->
           <script type="text/javascript" src="dashboard.js"></script>
 
           <script type="text/template" id="dash-template">
             <h1 class="text-center">Jason's Improvement Dashboard</h1>
-            <h2 class="text-center">Showing Info for: {{calories.date}}</h2>
+            <h2 class="text-center">Showing Info for: <%= date %></h2>
 
               <div class="row placeholders">
-                  <div class="col-xs-6 col-sm-3 placeholder">
-                    <img src="http://www.equinox.com/assets/images/sharing/equinox_logo.jpg" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-                    <h2>{{gym.totals.month}}</h2>
-                    <span class="text-muted">Checkins This Month</span>
+                <% _.each(trackers, function(tracker) { %>
+                  <div class="col-xs-6 col-sm-6">
+                    <div class="tile">
+                      <i class="tracker-icon flaticon-<%= tracker.icon %>"></i>
+                      <h2><%= tracker.result %> <% if (tracker.goal) { %>
+                        <span class="tracker-goal">/ <%= tracker.goal %></span>
+                      <%}%></h2>
+                      <span class="text-muted"><%= tracker.label %></span>
+                    </div>
                   </div>
-                  <div class="col-xs-6 col-sm-3 placeholder">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/6/63/MyFitnessPal_Logo.png" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-                    <h2>{{calories.netCalories}}/1601</h2>
-                    <span class="text-muted">Net Calories</span>
-                  </div>
-                  <div class="col-xs-6 col-sm-3 placeholder">
-                    <img src="http://media.tumblr.com/5fd6b3ccc4e8c978c87f469b236558ad/tumblr_inline_mwkqv1OuOg1ss97ol.png" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-                    <h2>{{language.streak}}</h2>
-                    <span class="text-muted">Spanish Lesson Streak</span>
-                  </div>
-                  <div class="col-xs-6 col-sm-3 placeholder">
-                    <img src="http://thefinancialbrand.com/wp-content/uploads/2015/06/Mint-logo.png" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-                    <h2>${{money.recent.total}}</h2>
-                    <span class="text-muted">Daily Spending</span>
-                  </div>
-                </div>
+                <% }) %>
               </div>
               <div class="row text-center">
-                <a class="btn btn-success" id="refresh" href="#" onclick="location.reload()">Refresh Data</a>
+                <a class="btn btn-refresh" id="refresh" href="#" onclick="location.reload()"><i class="flaticon-arrows130"></i></a>
               </div>
           </script>
 
