@@ -47,6 +47,9 @@
     </div>
           <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
           <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+          <script src="//d3js.org/d3.v3.min.js"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+
           <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
           <!--<div>Icons made by <a href="http://www.flaticon.com/authors/icomoon" title="Icomoon">Icomoon</a>, <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>-->
           <script type="text/javascript" src="dashboard.js"></script>
@@ -57,7 +60,7 @@
 
               <div class="row placeholders">
                 <% _.each(trackers, function(tracker) { %>
-                  <div class="col-xs-6 col-sm-6">
+                  <div id="tracker-<%= tracker.type %>" class="col-xs-12 col-sm-6">
                     <div class="tile">
                       <i class="tracker-icon flaticon-<%= tracker.icon %>"></i>
                       <h2><%= tracker.result %> <% if (tracker.goal) { %>
@@ -67,10 +70,16 @@
                     </div>
                   </div>
                 <% }) %>
+                  <div id="tracker-money-details" class="hide-tile col-xs-12 col-sm-6">
+                    <div id="barChart" class="tile">
+                      <svg id="visualisation" width="300" height="200"></svg>
+                    </div>
+                  </div>
               </div>
               <div class="row text-center">
                 <a class="btn btn-refresh" id="refresh" href="#" onclick="location.reload()"><i class="flaticon-arrows130"></i></a>
               </div>
+
           </script>
 
   </body>

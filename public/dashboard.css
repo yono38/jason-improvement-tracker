@@ -34,4 +34,22 @@ h1 {
     margin-left: auto;
     margin-right: auto;
     text-align: center;
+    max-height: 217px;
+}
+.hide-tile {
+    display: none;
+}
+div[id^='tracker-money'] {
+    cursor: pointer;
+}
+
+/* Chart */
+.axis text {
+    fill: #F4F4F9;
+}
+.axis path, .axis line
+{
+    fill: none;
+    stroke: #F4F4F9;
+    shape-rendering: crispEdges;
 }
