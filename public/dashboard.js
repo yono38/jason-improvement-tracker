@@ -13,13 +13,12 @@ $(document).ready(function() {
     MARGINS = {
       top: 5,
       right: 5,
-      bottom: 5,
+      bottom: 15,
       left: 5
     },
     xRange = d3.scale.ordinal().rangeRoundBands([MARGINS.left, WIDTH - MARGINS.right], 0.1).domain(barData.map(function (d) {
       return d.x;
     })),
-
 
     yRange = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([0,
       d3.max(barData, function (d) {
@@ -38,7 +37,6 @@ $(document).ready(function() {
       .orient("left")
       .tickSubdivide(true);
 
-
   vis.append('svg:g')
     .attr('class', 'x axis')
     .attr('transform', 'translate(0,' + (HEIGHT - MARGINS.bottom) + ')')
@@ -53,20 +51,24 @@ $(document).ready(function() {
     .data(barData)
     .enter()
     .append('rect')
-    .attr('x', function (d) {
-      return xRange(d.x);
-    })
-    .attr('y', function (d) {
-      return yRange(d.y);
-    })
+    .attr('x', function (d) { return xRange(d.x); })
+    .attr('y', function (d) { return yRange(d.y); })
     .attr('width', xRange.rangeBand())
     .attr('height', function (d) {
       return ((HEIGHT - MARGINS.bottom) - yRange(d.y));
     })
     .attr('fill', '#F4F4F9');
 
+  vis.selectAll("text.bar")
+    .data(barData)
+    .enter()
+    .append("text")
+    .attr("class", "bar spend-value")
+    .attr("text-anchor", "middle")
+    .attr('x', function (d) { return xRange(d.x) + (xRange.rangeBand() / 2); })
+    .attr('y', function (d) { return yRange(d.y) - 1; })
+    .text(function(d) { return '$' + parseInt(d.y); });
 }
-
 
   function makeTemplateData(trackerData) {
     var tileData = [
@@ -76,6 +78,7 @@ $(document).ready(function() {
         icon: 'gym8',
         result: trackerData.gym.totals.month,
         goal: undefined,
+        flip: true,
         label: 'Checkins This Month'
       },
       { // Food
@@ -101,16 +104,26 @@ $(document).ready(function() {
         result: trackerData.language.streak,
         result: '$' + trackerData.money.recent.total.toFixed(2),
         goal: undefined,
+        flip: true,
         label: 'Daily Spending'
       }
     ];
     return {
       date: trackerData.calories.date,
+      classes: _.where(trackerData.gym.classes, {timeOfDay: 'Evening'}),
+      classDate: trackerData.gym.classDate,
       trackers: tileData
     };
   }
 
-  $.getJSON('/trackers/all', function(trackerData) {
+  function handleFlipTile() {
+    $( "div[data-tracker]" ).on('click', function(e) {
+      var trackerId = $(this).data('tracker');//.attr('data-target');
+      $( "div[data-tracker='" + trackerId + "']" ).toggleClass('hide-tile');
+    });
+  }
+
+  function initPage(trackerData) {
     var templateData = makeTemplateData(trackerData);
     var template = _.template(
       $( "#dash-template" ).html()
@@ -119,8 +132,17 @@ $(document).ready(function() {
       template(templateData)
     );
     makeBarChart(trackerData.money.transactions);
-    $( "div[id^='tracker-money']" ).on('click', function() {
-      $( "div[id^='tracker-money']" ).toggleClass('hide-tile');
+    handleFlipTile();
+  }
+
+  // USE CACHED DATA ON DEV
+  if (window.location.hostname === 'localhost' && localStorage.getItem('trackers')) {
+    initPage(JSON.parse(localStorage.getItem('trackers')));
+  } else {
+    $.getJSON('/trackers/all', function(trackerData) {
+      initPage(trackerData);
+      localStorage.setItem('trackers', JSON.stringify(trackerData));
     });
-  });
+  }
+
 });

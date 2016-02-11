@@ -59,8 +59,20 @@
             <h2 class="text-center">Stats for: <span class="date-header"><%= date %></span></h2>
 
               <div class="row placeholders">
+                <div id="tracker-gym-details" data-tracker="gym" class="col-xs-12 col-sm-6 hide-tile flip-tile">
+                  <div id="gym-classes" class="tile">
+                    <h4>Classes for <%= classDate %></h4>
+                    <ul class="class-list">
+                      <% _.each(classes, function(clas) { %>
+                        <li><span class="class-time"><%= clas.time %></span> - <%= clas.name %></li>
+                      <% }) %>
+
+                    </ul>
+                  </div>
+                </div>
                 <% _.each(trackers, function(tracker) { %>
-                  <div id="tracker-<%= tracker.type %>" class="col-xs-12 col-sm-6">
+                  <div id="tracker-<%= tracker.type %>" data-tracker="<%= tracker.type %>" class="col-xs-12 col-sm-6
+                    <% if (tracker.flip === true) { print('flip-tile'); } %> ">
                     <div class="tile">
                       <i class="tracker-icon flaticon-<%= tracker.icon %>"></i>
                       <h2><%= tracker.result %> <% if (tracker.goal) { %>
@@ -70,7 +82,7 @@
                     </div>
                   </div>
                 <% }) %>
-                  <div id="tracker-money-details" class="hide-tile col-xs-12 col-sm-6">
+                  <div id="tracker-money-details" data-tracker="money" class="hide-tile col-xs-12 col-sm-6 flip-tile">
                     <div id="barChart" class="tile">
                       <svg id="visualisation" width="300" height="200"></svg>
                     </div>
