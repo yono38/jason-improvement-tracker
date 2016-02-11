@@ -117,7 +117,7 @@ $(document).ready(function() {
   }
 
   function handleFlipTile() {
-    $( "div[data-tracker]" ).on('click', function(e) {
+    $( ".flip-tile[data-tracker]" ).on('click', function(e) {
       var trackerId = $(this).data('tracker');//.attr('data-target');
       $( "div[data-tracker='" + trackerId + "']" ).toggleClass('hide-tile');
     });
