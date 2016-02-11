@@ -3,44 +3,68 @@ var eq = require('./lib/equinox.js')();
 var fp = require('./lib/myfitnesspal.js')();
 var duo = require('./lib/duolingo.js')();
 var mint= require('./lib/mint.js')();
+var logger = require('morgan');
 var express = require('express'),
     cors = require('cors');
 var Promise = require('bluebird');
 var app = express();
 
-app.get('/duo', function(req, res) {
-  duo.login().then(function(data) {
-    console.log('Logged in!');
-    duo.getStreak().then(function(data) {
+app.use(logger('dev'));
+
+app.get('/trackers/language/streak', function(req, res) {
+  duo.login().then(duo.getStreak).then(data =>  {
       res.json(data);
-    });
   });
 });
 
-app.get('/eq', function (req, res) {
+app.get('/trackers/gym/checkins', function(req, res) {
   eq.login().then(function() {
-    console.log('Logged in!');
-    eq.getCheckins().then(function(data) {
+    eq.getClasses().then(data => {
       res.json(data);
-    });
+    })
   });
 });
 
-app.get('/mint', function(req, res) {
-  mint.loginAndGetTransactions().then(function(data) {
+app.get('/trackers/gym/classes', function(req, res) {
+  eq.login().then(eq.getClasses).then(data => {
     res.json(data);
   });
 });
 
-app.get('/fp', function(req, res) {
+app.get('/trackers/gym/classes/:classId/bikes', function (req, res) {
+  eq.login().then(eq.getOpenBikes.bind(this, req.params.classId)).then(data => {
+    res.json(data);
+  });
+});
+
+app.get('/trackers/gym/classes/:classId/cancel', (req, res) => {
+  eq.login().then(eq.cancelBike.bind(this, req.params.classId)).then(d => {
+    res.json(d);
+  });
+});
+
+app.get('/trackers/gym/classes/:classId/book/:bikeId', (req, res) => {
+  eq.login().then(() => {
+    eq.bookBike(req.params.classId, req.params.bikeId).then(d => {
+      res.json(d);
+    });
+  });
+});
+
+app.get('/trackers/money', function(req, res) {
+  mint.loginAndGetTransactions().then((data) => {
+    res.json(data);
+  });
+});
+
+app.get('/trackers/calories', function(req, res) {
   fp.loginAndGetCalorieInfo().then(function(data) {
     res.json(data);
   });
 });
 
-app.get('/trackall', function(req, res) {
-  Promise.all([fp.loginAndGetCalorieInfo(), eq.loginAndGetCheckins(), duo.loginAndGetStreak(), mint.loginAndGetTransactions()]).then(function(resolved) {
-    console.log(resolved);
+app.get('/trackers/all', function(req, res) {
+  Promise.all([fp.loginAndGetCalorieInfo(), eq.loginAndGetInfo(), duo.loginAndGetStreak(), mint.loginAndGetTransactions()]).then(function(resolved) {
     var resObj = {
       calories: resolved[0],
       gym: resolved[1],

@@ -110,7 +110,7 @@ $(document).ready(function() {
     };
   }
 
-  $.getJSON('/trackall', function(trackerData) {
+  $.getJSON('/trackers/all', function(trackerData) {
     var templateData = makeTemplateData(trackerData);
     var template = _.template(
       $( "#dash-template" ).html()
