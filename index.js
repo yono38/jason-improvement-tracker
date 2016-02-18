@@ -10,6 +10,7 @@ var Promise = require('bluebird');
 var app = express();
 
 app.use(logger('dev'));
+app.use(cors());
 
 app.get('/trackers/language/streak', function(req, res) {
   duo.login().then(duo.getStreak).then(data =>  {
