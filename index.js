@@ -12,15 +12,23 @@ var app = express();
 app.use(logger('dev'));
 app.use(cors());
 
+/*
 app.get('/trackers/language/streak', function(req, res) {
   duo.login().then(duo.getStreak).then(data =>  {
       res.json(data);
   });
 });
+*/
+
+app.get('/trackers/gym', (req, res) => {
+  eq.loginAndGetInfo().then(data => {
+    res.json(data)
+  });
+});
 
 app.get('/trackers/gym/checkins', function(req, res) {
   eq.login().then(function() {
-    eq.getClasses().then(data => {
+    eq.getCheckins().then(data => {
       res.json(data);
     })
   });
@@ -52,11 +60,13 @@ app.get('/trackers/gym/classes/:classId/book/:bikeId', (req, res) => {
   });
 });
 
+/*
 app.get('/trackers/money', function(req, res) {
   mint.loginAndGetTransactions().then((data) => {
     res.json(data);
   });
 });
+*/
 
 app.get('/trackers/calories', function(req, res) {
   fp.loginAndGetCalorieInfo().then(function(data) {
@@ -65,12 +75,12 @@ app.get('/trackers/calories', function(req, res) {
 });
 
 app.get('/trackers/all', function(req, res) {
-  Promise.all([fp.loginAndGetCalorieInfo(), eq.loginAndGetInfo(), duo.loginAndGetStreak(), mint.loginAndGetTransactions()]).then(function(resolved) {
+  Promise.all([fp.loginAndGetCalorieInfo(), eq.loginAndGetInfo(), /*duo.loginAndGetStreak(), mint.loginAndGetTransactions()*/]).then(function(resolved) {
     var resObj = {
       calories: resolved[0],
       gym: resolved[1],
-      language: resolved[2],
-      money: resolved[3]
+      // language: resolved[2],
+      // money: resolved[3]
     };
 
     res.json(resObj);
