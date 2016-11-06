@@ -20,6 +20,37 @@ app.get('/trackers/language/streak', function(req, res) {
 });
 */
 
+app.get('/docs', (req, res) => {
+  const docs = {
+    '/trackers/gym': {
+      description: 'Aggregates all information for current day'
+    },
+    '/trackers/gym/checkins': {
+      description: 'Returns all month & week totals, and a list of checkin timestamps for the month',
+      queryParams: {
+        'month': 'Number 1-12',
+        'year': '4-digit year'
+      }
+    },
+    '/trackers/gym/classes': {
+      description: 'Returns all classes for a day. Defaults to current day until 7pm when it switches to next day',
+      queryParams: {
+        'startDate': 'Datetime string for day to grab class data'
+      }
+    },
+    '/trackers/gym/classes/:classId/bikes': {
+      description: 'List of available bikes for a class'
+    },
+    '/trackers/gym/classes/:classId/cancel': {
+      description: 'Cancel a booked bike'
+    },
+    '/trackers/gym/classes/:classId/book/:bikeId': {
+      description: 'Book a bike'
+    }
+  };
+  res.json(docs);
+});
+
 app.get('/trackers/gym', (req, res) => {
   eq.loginAndGetInfo().then(data => {
     res.json(data)
