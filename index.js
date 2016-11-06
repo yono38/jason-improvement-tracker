@@ -28,14 +28,14 @@ app.get('/trackers/gym', (req, res) => {
 
 app.get('/trackers/gym/checkins', function(req, res) {
   eq.login().then(function() {
-    eq.getCheckins().then(data => {
+    eq.getCheckins(req.query.month, req.query.year).then(data => {
       res.json(data);
     })
   });
 });
 
 app.get('/trackers/gym/classes', function(req, res) {
-  eq.login().then(eq.getClasses).then(data => {
+  eq.login().then(() => eq.getClasses(req.query.startDate)).then(data => {
     res.json(data);
   });
 });
