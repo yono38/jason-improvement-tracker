@@ -1,124 +1,91 @@
 require('dotenv').load();
-var eq = require('./lib/equinox.js')();
-var fp = require('./lib/myfitnesspal.js')();
-var duo = require('./lib/duolingo.js')();
-var mint= require('./lib/mint.js')();
-var logger = require('morgan');
-var express = require('express'),
-    cors = require('cors');
-var Promise = require('bluebird');
+const equinox = require('./lib/equinox.js');
+const logger = require('morgan');
+const basicAuth = require('basic-auth');
+const moment = require('moment');
+const express = require('express');
+const cors = require('cors');
+var bodyParser = require('body-parser');
+
 var app = express();
+const { auth, unauthorized } = require('./lib/utils');
 
 app.use(logger('dev'));
 app.use(cors());
-
-/*
-app.get('/trackers/language/streak', function(req, res) {
-  duo.login().then(duo.getStreak).then(data =>  {
-      res.json(data);
-  });
-});
-*/
+app.use(bodyParser.json());
 
 app.get('/docs', (req, res) => {
   const docs = {
-    '/trackers/gym': {
-      description: 'Aggregates all information for current day'
-    },
-    '/trackers/gym/checkins': {
+    'GET /checkins': {
       description: 'Returns all month & week totals, and a list of checkin timestamps for the month',
       queryParams: {
         'month': 'Number 1-12',
         'year': '4-digit year'
       }
     },
-    '/trackers/gym/classes': {
+    'GET /classes': {
       description: 'Returns all classes for a day. Defaults to current day until 7pm when it switches to next day',
       queryParams: {
         'startDate': 'Datetime string for day to grab class data'
       }
     },
-    '/trackers/gym/classes/:classId/bikes': {
+    'GET /classes/:classId/bikes': {
       description: 'List of available bikes for a class'
     },
-    '/trackers/gym/classes/:classId/cancel': {
+    'POST /classes/:classId': {
+      description: 'Book a bike'
+    },
+    'DELETE /classes/:classId': {
       description: 'Cancel a booked bike'
     },
-    '/trackers/gym/classes/:classId/book/:bikeId': {
-      description: 'Book a bike'
-    }
   };
   res.json(docs);
 });
 
-app.get('/trackers/gym', (req, res) => {
-  eq.loginAndGetInfo().then(data => {
-    res.json(data)
-  });
-});
-
-app.get('/trackers/gym/checkins', function(req, res) {
-  eq.login().then(function() {
-    eq.getCheckins(req.query.month, req.query.year).then(data => {
-      res.json(data);
-    })
-  });
-});
-
-app.get('/trackers/gym/classes', function(req, res) {
-  eq.login().then(() => eq.getClasses(req.query.startDate)).then(data => {
-    res.json(data);
-  });
-});
-
-app.get('/trackers/gym/classes/:classId/bikes', function (req, res) {
-  eq.login().then(eq.getOpenBikes.bind(this, req.params.classId)).then(data => {
-    res.json(data);
-  });
-});
-
-app.get('/trackers/gym/classes/:classId/cancel', (req, res) => {
-  eq.login().then(eq.cancelBike.bind(this, req.params.classId)).then(d => {
-    res.json(d);
-  });
-});
-
-app.get('/trackers/gym/classes/:classId/book/:bikeId', (req, res) => {
-  eq.login().then(() => {
-    eq.bookBike(req.params.classId, req.params.bikeId).then(d => {
-      res.json(d);
+app.get('/auth', auth, (req, res) => {
+  const { name, pass } = basicAuth(req);
+  equinox.login(name, pass)
+    .then(data => res.json(data))
+    .catch(err => {
+      console.error(err.message);
+      return unauthorized(res);
     });
+});
+
+app.get('/classes', auth, (req, res) => {
+  equinox.makeAuthenticatedCall(req, res, 'getClasses', {
+    startDate: req.query.startDate
   });
 });
 
-/*
-app.get('/trackers/money', function(req, res) {
-  mint.loginAndGetTransactions().then((data) => {
-    res.json(data);
-  });
-});
-*/
-
-app.get('/trackers/calories', function(req, res) {
-  fp.loginAndGetCalorieInfo().then(function(data) {
-    res.json(data);
+app.get('/classes/:classId/bikes', auth, (req, res) => {
+  equinox.makeAuthenticatedCall(req, res, 'getOpenBikes', {
+    classId: req.params.classId
   });
 });
 
-app.get('/trackers/all', function(req, res) {
-  Promise.all([fp.loginAndGetCalorieInfo(), eq.loginAndGetInfo(), /*duo.loginAndGetStreak(), mint.loginAndGetTransactions()*/]).then(function(resolved) {
-    var resObj = {
-      calories: resolved[0],
-      gym: resolved[1],
-      // language: resolved[2],
-      // money: resolved[3]
-    };
-
-    res.json(resObj);
+app.delete('/classes/:classId', auth, (req, res) => {
+  equinox.makeAuthenticatedCall(req, res, 'cancelBike', {
+    classId: req.params.classId
   });
 });
 
-app.use(express.static('public'));
+app.post('/classes/:classId', auth, (req, res) => {
+  console.log('body', req.body)
+  console.log(req);
+  equinox.makeAuthenticatedCall(req, res, 'bookBike', {
+    classId: req.params.classId,
+    bikeId: req.body.bikeId
+  });
+});
+
+app.get('/checkins', auth, (req, res) => {
+  equinox.makeAuthenticatedCall(req, res, 'getCheckins', {
+    month: req.query.month,
+    year: req.query.year
+  });
+});
+
 app.use(cors());
 
 app.listen(process.env.PORT, function () {
