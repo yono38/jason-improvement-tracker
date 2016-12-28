@@ -71,11 +71,28 @@ app.delete('/classes/:classId', auth, (req, res) => {
 });
 
 app.post('/classes/:classId', auth, (req, res) => {
-  console.log('body', req.body)
-  console.log(req);
   equinox.makeAuthenticatedCall(req, res, 'bookBike', {
     classId: req.params.classId,
     bikeId: req.body.bikeId
+  });
+});
+
+app.post('/calendar/:classId', auth, (req, res) => {
+  equinox.makeAuthenticatedCall(req, res, 'addToCalendar', {
+    classId: req.params.classId
+  });
+});
+
+app.delete('/calendar/:classId', auth, (req, res) => {
+  equinox.makeAuthenticatedCall(req, res, 'removeFromCalendar', {
+    classId: req.params.classId
+  });
+});
+
+app.get('/calendar/', auth, (req, res) => {
+  equinox.makeAuthenticatedCall(req, res, 'getCalendar', {
+    fromDate: req.query.fromDate,
+    toDate: req.query.toDate
   });
 });
 
