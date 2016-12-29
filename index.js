@@ -103,6 +103,13 @@ app.get('/checkins', auth, (req, res) => {
   });
 });
 
+app.get('/workouts', auth, (req, res) => {
+  equinox.makeAuthenticatedCall(req, res, 'getActivity', {
+    month: req.query.month,
+    year: req.query.year
+  });
+});
+
 app.use(cors());
 
 app.listen(process.env.PORT, function () {
