@@ -64,11 +64,13 @@ app.get('/classes/:classId/bikes', auth, (req, res) => {
   });
 });
 
+
 app.get('/classes/:classId', auth, (req, res) => {
   equinox.makeAuthenticatedCall(req, res, 'getClass', {
     classId: req.params.classId
   });
 });
+
 
 app.delete('/classes/:classId', auth, (req, res) => {
   equinox.makeAuthenticatedCall(req, res, 'cancelBike', {
