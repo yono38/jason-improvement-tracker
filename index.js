@@ -1,4 +1,4 @@
-require('dotenv').load();
+const PORT = process.env.PORT || 4555;
 const equinox = require('./lib/equinox.js');
 const logger = require('morgan');
 const basicAuth = require('basic-auth');
@@ -64,6 +64,12 @@ app.get('/classes/:classId/bikes', auth, (req, res) => {
   });
 });
 
+app.get('/classes/:classId', auth, (req, res) => {
+  equinox.makeAuthenticatedCall(req, res, 'getClass', {
+    classId: req.params.classId
+  });
+});
+
 app.delete('/classes/:classId', auth, (req, res) => {
   equinox.makeAuthenticatedCall(req, res, 'cancelBike', {
     classId: req.params.classId
@@ -73,7 +79,8 @@ app.delete('/classes/:classId', auth, (req, res) => {
 app.post('/classes/:classId', auth, (req, res) => {
   equinox.makeAuthenticatedCall(req, res, 'bookBike', {
     classId: req.params.classId,
-    bikeId: req.body.bikeId
+    bikeId: req.body.bikeId,
+    facilityId: req.body.facilityId
   });
 });
 
@@ -89,7 +96,7 @@ app.delete('/calendar/:classId', auth, (req, res) => {
   });
 });
 
-app.get('/calendar/', auth, (req, res) => {
+app.get('/calendar', auth, (req, res) => {
   equinox.makeAuthenticatedCall(req, res, 'getCalendar', {
     fromDate: req.query.fromDate,
     toDate: req.query.toDate
@@ -112,6 +119,6 @@ app.get('/workouts', auth, (req, res) => {
 
 app.use(cors());
 
-app.listen(process.env.PORT, function () {
-  console.log('API listening on port: ' + process.env.PORT);
+app.listen(PORT, function () {
+  console.log('API listening on port: ' + PORT);
 });
